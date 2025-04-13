@@ -24,18 +24,20 @@ export default function SavingsList({
   const [searchTerm, setSearchTerm] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const filteredSavings = savings.filter((saving) => {
-    const matchesSearch =
-      saving.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      saving.amount.toString().includes(searchTerm);
+  const filteredSavings = Array.isArray(savings)
+    ? savings.filter((saving) => {
+        const matchesSearch =
+          saving.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          saving.amount.toString().includes(searchTerm);
 
-    const category = categories.find((cat) => cat.id === saving.categoryId);
-    const matchesCategory = category?.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+        const category = categories.find((cat) => cat.id === saving.categoryId);
+        const matchesCategory = category?.name
+          ?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
 
-    return matchesSearch || matchesCategory;
-  });
+        return matchesSearch || matchesCategory;
+      })
+    : [];
 
   const getCategoryById = (id: string) => {
     return categories.find((category) => category.id === id);

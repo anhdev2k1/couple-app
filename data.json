@@ -1,0 +1,33 @@
+{
+  "coupleData": {
+    "startDate": "2022-04-13"
+  },
+  "plans": [],
+  "savingCategories": [
+    {
+      "id": "1",
+      "name": "Tiền mặt",
+      "color": "#4ade80",
+      "icon": "money-bill",
+      "imageUrl": "https://img.icons8.com/color/96/money.png",
+      "createdAt": "2025-04-13T15:06:01.842Z"
+    },
+    {
+      "id": "2",
+      "name": "Đầu tư",
+      "color": "#3b82f6",
+      "icon": "chart-line",
+      "imageUrl": "https://img.icons8.com/color/96/investment-portfolio.png",
+      "createdAt": "2025-04-13T15:06:01.842Z"
+    },
+    {
+      "id": "3",
+      "name": "Vàng",
+      "color": "#f59e0b",
+      "icon": "gem",
+      "imageUrl": "https://img.icons8.com/color/96/gold-bars.png",
+      "createdAt": "2025-04-13T15:06:01.842Z"
+    }
+  ],
+  "savings": []
+}

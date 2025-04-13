@@ -86,7 +86,7 @@ export default function Home() {
           fetch("/api/savings?byCategory=true"),
           fetch("/api/savings?currentMonth=true"),
         ]);
-
+        
         setCoupleData(await coupleRes.json());
         setPlans(await plansRes.json());
         setSavings(await savingsRes.json());
@@ -302,15 +302,20 @@ export default function Home() {
         method: "DELETE",
       });
 
-      const [savingsRes, totalRes, monthlyRes] = await Promise.all([
-        fetch("/api/savings"),
-        fetch("/api/savings?total=true"),
-        fetch("/api/savings?byMonth=true"),
-      ]);
+      const [savingsRes, totalRes, monthlyRes, byCategoryRes, currentMonthRes] =
+        await Promise.all([
+          fetch("/api/savings"),
+          fetch("/api/savings?total=true"),
+          fetch("/api/savings?byMonth=true"),
+          fetch("/api/savings?byCategory=true"),
+          fetch("/api/savings?currentMonth=true"),
+        ]);
 
       setSavings(await savingsRes.json());
       setTotalSavings((await totalRes.json()).total);
       setMonthlySavings(await monthlyRes.json());
+      setSavingsByCategory(await byCategoryRes.json());
+      setCurrentMonthSavings((await currentMonthRes.json()).amount);
     } catch (error) {
       console.error("Error deleting saving:", error);
     }

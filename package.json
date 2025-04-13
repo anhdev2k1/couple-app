@@ -16,6 +16,7 @@
     "chart.js": "^4.4.8",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.6.5",
+    "fs": "^0.0.1-security",
     "next": "15.3.0",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",

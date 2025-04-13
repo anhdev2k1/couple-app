@@ -1,55 +1,138 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // app/lib/data.ts
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuid } from "uuid";
 import { Couple } from "../types/couple";
 import { Plan } from "../types/plan";
 import { randomImages, Saving, SavingCategory } from "../types/saving";
+import fs from "fs/promises";
+import path from "path";
 
-let coupleData: Couple = {
-  startDate: new Date().toISOString(),
+// Đường dẫn tới file JSON lưu trữ dữ liệu
+const DATA_FILE = path.join(process.cwd(), "data.json");
+
+const readData = async (): Promise<{
+  coupleData: Couple;
+  plans: Plan[];
+  savingCategories: SavingCategory[];
+  savings: Saving[];
+}> => {
+  try {
+    const fileContent = await fs.readFile(DATA_FILE, "utf-8");
+    const parsed = JSON.parse(fileContent);
+    console.log("Parsed data from file:", parsed);
+    return {
+      coupleData: parsed.coupleData || { startDate: new Date().toISOString() },
+      plans: Array.isArray(parsed.plans) ? parsed.plans : [],
+      savingCategories: Array.isArray(parsed.savingCategories)
+        ? parsed.savingCategories
+        : [
+            {
+              id: "1",
+              name: "Tiền mặt",
+              color: "#4ade80",
+              icon: "money-bill",
+              imageUrl: "https://img.icons8.com/color/96/money.png",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "2",
+              name: "Đầu tư",
+              color: "#3b82f6",
+              icon: "chart-line",
+              imageUrl:
+                "https://img.icons8.com/color/96/investment-portfolio.png",
+              createdAt: new Date().toISOString(),
+            },
+            {
+              id: "3",
+              name: "Vàng",
+              color: "#f59e0b",
+              icon: "gem",
+              imageUrl: "https://img.icons8.com/color/96/gold-bars.png",
+              createdAt: new Date().toISOString(),
+            },
+          ],
+      savings: Array.isArray(parsed.savings) ? parsed.savings : [],
+    };
+  } catch (error) {
+    console.error("Error reading data file:", error);
+    return {
+      coupleData: { startDate: new Date().toISOString() },
+      plans: [],
+      savingCategories: [
+        {
+          id: "1",
+          name: "Tiền mặt",
+          color: "#4ade80",
+          icon: "money-bill",
+          imageUrl: "https://img.icons8.com/color/96/money.png",
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: "2",
+          name: "Đầu tư",
+          color: "#3b82f6",
+          icon: "chart-line",
+          imageUrl: "https://img.icons8.com/color/96/investment-portfolio.png",
+          createdAt: new Date().toISOString(),
+        },
+        {
+          id: "3",
+          name: "Vàng",
+          color: "#f59e0b",
+          icon: "gem",
+          imageUrl: "https://img.icons8.com/color/96/gold-bars.png",
+          createdAt: new Date().toISOString(),
+        },
+      ],
+      savings: [],
+    };
+  }
 };
 
-let plans: Plan[] = [];
-
-
-let savingCategories: SavingCategory[] = [
-  {
-    id: "1",
-    name: "Tiền mặt",
-    color: "#4ade80",
-    icon: "money-bill",
-    imageUrl: "https://img.icons8.com/color/96/money.png",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "2",
-    name: "Đầu tư",
-    color: "#3b82f6",
-    icon: "chart-line",
-    imageUrl: "https://img.icons8.com/color/96/investment-portfolio.png",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "3",
-    name: "Vàng",
-    color: "#f59e0b",
-    icon: "gem",
-    imageUrl: "https://img.icons8.com/color/96/gold-bars.png",
-    createdAt: new Date().toISOString(),
-  },
-];
-
-let savings: Saving[] = [];
+const writeData = async (data: {
+  coupleData: Couple;
+  plans: Plan[];
+  savingCategories: SavingCategory[];
+  savings: Saving[];
+}) => {
+  try {
+    console.log("Writing to data.json at:", DATA_FILE);
+    console.log("Data to write:", {
+      coupleData: data.coupleData,
+      plans: data.plans,
+      savingCategories: data.savingCategories,
+      savings: data.savings,
+    });
+    await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2), "utf-8");
+    console.log("Successfully wrote to data.json");
+    // Đọc lại file để xác nhận
+    const fileContent = await fs.readFile(DATA_FILE, "utf-8");
+    console.log("File content after write:", JSON.parse(fileContent));
+  } catch (error) {
+    console.error("Error writing to data file:", error);
+    throw error;
+  }
+};
 
 /*
 ---
 Couple functions
 ---
 */
-export const getCoupleData = (): Couple => coupleData;
-export const updateCoupleData = (newData: Partial<Couple>): Couple => {
-  coupleData = { ...coupleData, ...newData };
-  return coupleData;
+export const getCoupleData = async (): Promise<Couple> => {
+  const data = await readData();
+  return data.coupleData;
+};
+
+export const updateCoupleData = async (
+  newData: Partial<Couple>
+): Promise<Couple> => {
+  const data = await readData();
+  data.coupleData = { ...data.coupleData, ...newData };
+  await writeData(data);
+  return data.coupleData;
 };
 
 /*
@@ -57,36 +140,56 @@ export const updateCoupleData = (newData: Partial<Couple>): Couple => {
 Plans functions
 ---
 */
-export const getPlans = (): Plan[] => plans;
+export const getPlans = async (): Promise<Plan[]> => {
+  const data = await readData();
+  return data.plans;
+};
 
-export const addPlan = (plan: Omit<Plan, "id" | "createdAt">): Plan => {
+export const addPlan = async (
+  plan: Omit<Plan, "id" | "createdAt">
+): Promise<Plan> => {
+  console.log("Starting addPlan with input:", plan);
+  const data = await readData();
+  console.log("Data read from file:", {
+    savings: data.savings,
+    plans: data.plans,
+  });
   const newPlan: Plan = {
-    id: uuidv4(),
+    id: uuid(),
     ...plan,
     createdAt: new Date().toISOString(),
   };
-  plans.push(newPlan);
+  console.log("New plan to add:", newPlan);
+  data.plans = Array.isArray(data.plans) ? [...data.plans, newPlan] : [newPlan];
+  console.log("Updated data.plans:", data.plans);
+  await writeData(data);
+  console.log("addPlan completed, final data.plans:", data.plans);
   return newPlan;
 };
 
-export const updatePlan = (
+export const updatePlan = async (
   id: string,
   updatedPlan: Partial<Plan>
-): Plan | null => {
-  const index = plans.findIndex((plan) => plan.id === id);
+): Promise<Plan | null> => {
+  const data = await readData();
+  const index = data.plans.findIndex((plan) => plan.id === id);
   if (index !== -1) {
-    plans[index] = { ...plans[index], ...updatedPlan };
-    return plans[index];
+    data.plans[index] = { ...data.plans[index], ...updatedPlan };
+    await writeData(data);
+    return data.plans[index];
   }
   return null;
 };
 
-export const deletePlan = (id: string): void => {
-  plans = plans.filter((plan) => plan.id !== id);
+export const deletePlan = async (id: string): Promise<void> => {
+  const data = await readData();
+  data.plans = data.plans.filter((plan) => plan.id !== id);
+  await writeData(data);
 };
 
-export const getUpcomingPlans = (): Plan[] => {
-  return plans
+export const getUpcomingPlans = async (): Promise<Plan[]> => {
+  const data = await readData();
+  return data.plans
     .filter((plan) => !plan.completed)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 };
@@ -100,79 +203,113 @@ const getRandomImage = () => {
   return randomImages[Math.floor(Math.random() * randomImages.length)];
 };
 
-export const getSavingCategories = (): SavingCategory[] => savingCategories;
+export const getSavingCategories = async (): Promise<SavingCategory[]> => {
+  const data = await readData();
+  return data.savingCategories;
+};
 
-export const addSavingCategory = (
+export const addSavingCategory = async (
   category: Omit<SavingCategory, "id" | "createdAt">
-): SavingCategory => {
-  const newCategory = {
-    id: uuidv4(),
+): Promise<SavingCategory> => {
+  const data = await readData();
+  const newCategory: SavingCategory = {
+    id: uuid(),
     ...category,
     imageUrl: category.imageUrl || getRandomImage(),
     createdAt: new Date().toISOString(),
   };
-  savingCategories.push(newCategory);
+  data.savingCategories = [...data.savingCategories, newCategory];
+  await writeData(data);
   return newCategory;
 };
 
-export const updateSavingCategory = (
+export const updateSavingCategory = async (
   id: string,
   updatedCategory: Partial<SavingCategory>
-): SavingCategory | null => {
-  const index = savingCategories.findIndex((cat) => cat.id === id);
+): Promise<SavingCategory | null> => {
+  const data = await readData();
+  const index = data.savingCategories.findIndex((cat) => cat.id === id);
   if (index !== -1) {
-    savingCategories[index] = {
-      ...savingCategories[index],
+    data.savingCategories[index] = {
+      ...data.savingCategories[index],
       ...updatedCategory,
       updatedAt: new Date().toISOString(),
     };
-    return savingCategories[index];
+    await writeData(data);
+    return data.savingCategories[index];
   }
   return null;
 };
 
-export const deleteSavingCategory = (id: string): void => {
-  savingCategories = savingCategories.filter((cat) => cat.id !== id);
+export const deleteSavingCategory = async (id: string): Promise<void> => {
+  const data = await readData();
+  data.savingCategories = data.savingCategories.filter((cat) => cat.id !== id);
+  await writeData(data);
 };
-export const getSavings = (): Saving[] => savings;
 
-export const addSaving = (saving: Omit<Saving, "id" | "createdAt">): Saving => {
+export const getSavings = async (): Promise<Saving[]> => {
+  const data = await readData();
+  return data.savings;
+};
+
+export const addSaving = async (
+  saving: Omit<Saving, "id" | "createdAt">
+): Promise<Saving> => {
+  console.log("Starting addSaving with input:", saving);
+  const data = await readData();
+  console.log("Data read from file:", {
+    savings: data.savings,
+    plans: data.plans,
+  });
   const newSaving: Saving = {
-    id: uuidv4(),
+    id: uuid(),
     ...saving,
     createdAt: new Date().toISOString(),
   };
-  savings.push(newSaving);
+  console.log("New saving to add:", newSaving);
+  data.savings = Array.isArray(data.savings)
+    ? [...data.savings, newSaving]
+    : [newSaving];
+  console.log("Updated data.savings:", data.savings);
+  await writeData(data);
+  console.log("addSaving completed, final data.savings:", data.savings);
   return newSaving;
 };
 
-export const updateSaving = (
+
+export const updateSaving = async (
   id: string,
   updatedSaving: Partial<Saving>
-): Saving | null => {
-  const index = savings.findIndex((saving) => saving.id === id);
+): Promise<Saving | null> => {
+  const data = await readData();
+  const index = data.savings.findIndex((saving) => saving.id === id);
   if (index !== -1) {
-    savings[index] = {
-      ...savings[index],
+    data.savings[index] = {
+      ...data.savings[index],
       ...updatedSaving,
       updatedAt: new Date().toISOString(),
     };
-    return savings[index];
+    await writeData(data);
+    return data.savings[index];
   }
   return null;
 };
 
-export const deleteSaving = (id: string): void => {
-  savings = savings.filter((saving) => saving.id !== id);
+export const deleteSaving = async (id: string): Promise<void> => {
+  const data = await readData();
+  data.savings = data.savings.filter((saving) => saving.id !== id);
+  await writeData(data);
 };
 
-export const getTotalSavings = (): number => {
-  return savings.reduce((total, saving) => total + saving.amount, 0);
+export const getTotalSavings = async (): Promise<number> => {
+  const data = await readData();
+  return data.savings.reduce((total, saving) => total + saving.amount, 0);
 };
 
-export const getSavingsByMonth = (
+export const getSavingsByMonth = async (
   months: number = 6
-): { month: string; amount: number }[] => {
+): Promise<{ month: string; amount: number }[]> => {
+  const data = await readData();
   const result: { month: string; amount: number }[] = [];
   const now = new Date();
 
@@ -182,7 +319,7 @@ export const getSavingsByMonth = (
       .toString()
       .padStart(2, "0")}`;
 
-    const monthlySavings = savings.filter((saving) => {
+    const monthlySavings = data.savings.filter((saving) => {
       const savingDate = new Date(saving.date);
       return (
         savingDate.getFullYear() === date.getFullYear() &&
@@ -199,14 +336,14 @@ export const getSavingsByMonth = (
   return result;
 };
 
-export const getSavingsByCategory = (): {
-  category: SavingCategory;
-  amount: number;
-}[] => {
+export const getSavingsByCategory = async (): Promise<
+  { category: SavingCategory; amount: number }[]
+> => {
+  const data = await readData();
   const result: { category: SavingCategory; amount: number }[] = [];
 
-  savingCategories.forEach((category) => {
-    const categorySavings = savings.filter(
+  data.savingCategories.forEach((category) => {
+    const categorySavings = data.savings.filter(
       (saving) => saving.categoryId === category.id
     );
     const total = categorySavings.reduce(
@@ -225,12 +362,13 @@ export const getSavingsByCategory = (): {
   return result;
 };
 
-export const getCurrentMonthSavings = (): number => {
+export const getCurrentMonthSavings = async (): Promise<number> => {
+  const data = await readData();
   const now = new Date();
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
 
-  return savings
+  return data.savings
     .filter((saving) => {
       const savingDate = new Date(saving.date);
       return (
