@@ -18,7 +18,6 @@ export default function SavingsList({
   savings,
   onDelete,
   onEdit,
-  total,
   categories,
 }: SavingsListProps) {
   const [searchTerm, setSearchTerm] = useState("");

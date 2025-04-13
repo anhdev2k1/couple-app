@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { FiHeart, FiCalendar, FiDollarSign } from "react-icons/fi";
+import { FiCalendar, FiDollarSign, FiHeart } from "react-icons/fi";
 
 interface TabNavigationProps {
   activeTab: string;

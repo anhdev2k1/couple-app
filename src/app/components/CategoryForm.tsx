@@ -119,6 +119,7 @@ export default function CategoryForm({
               src={imageUrl}
               alt={name}
               className="w-12 h-12 object-cover rounded-lg mr-2"
+              width={20}
             />
             <button
               type="button"

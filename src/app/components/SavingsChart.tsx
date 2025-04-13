@@ -1,17 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
-  BarChart,
   Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
-import { PieChart, Pie, Cell } from "recharts";
 import { SavingCategory } from "../types/saving";
+import Image from "next/image";
 
 interface SavingsChartProps {
   monthlyData: { month: string; amount: number }[];
@@ -33,8 +37,6 @@ export default function SavingsChart({
     innerRadius,
     outerRadius,
     percent,
-    index,
-    name,
   }: any) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
@@ -111,7 +113,7 @@ export default function SavingsChart({
                   <div className="bg-white p-3 rounded-lg shadow-lg border border-gray-200">
                     <div className="flex items-center mb-2">
                       {data.imageUrl && (
-                        <img
+                        <Image
                           src={data.imageUrl}
                           alt={data.name}
                           className="w-8 h-8 object-cover rounded-full mr-2"

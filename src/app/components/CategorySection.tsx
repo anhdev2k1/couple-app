@@ -3,6 +3,7 @@
 
 import { FiEdit2, FiTrash2, FiPlus, FiLayers } from "react-icons/fi";
 import { SavingCategory } from "@/app/types/saving";
+import Image from "next/image";
 
 interface CategorySectionProps {
   categories: SavingCategory[];
@@ -51,10 +52,12 @@ export default function CategorySection({
               className="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors"
             >
               {category.imageUrl && (
-                <img
+                <Image
                   src={category.imageUrl}
                   alt={category.name}
                   className="w-10 h-10 object-cover rounded-full mr-3"
+                  width={40}
+                  height={40}
                 />
               )}
               <div className="flex-1 min-w-0">
