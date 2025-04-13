@@ -117,6 +117,8 @@ export default function SavingsChart({
                           src={data.imageUrl}
                           alt={data.name}
                           className="w-8 h-8 object-cover rounded-full mr-2"
+                          width={40}
+                          height={40}
                         />
                       )}
                       <div>

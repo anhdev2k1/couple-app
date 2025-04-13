@@ -5,6 +5,7 @@ import { FiEdit, FiTrash2, FiSearch, FiDollarSign } from "react-icons/fi";
 import { format } from "date-fns";
 import { Saving, SavingCategory } from "@/app/types/saving";
 import { useState } from "react";
+import Image from "next/image";
 
 interface SavingsListProps {
   savings: (Saving & { category?: SavingCategory })[];
@@ -118,10 +119,12 @@ export default function SavingsList({
                       {category && (
                         <div className="flex items-center">
                           {category.imageUrl && (
-                            <img
+                            <Image
                               src={category.imageUrl}
                               alt={category.name}
                               className="w-6 h-6 object-cover rounded-full mr-2"
+                              width={24}
+                              height={24}
                             />
                           )}
                           <span>{category.name}</span>
