@@ -26,6 +26,7 @@ import Modal from "./components/Modal";
 import { Saving, SavingCategory } from "./types/saving";
 import { Plan } from "./types/plan";
 import { addDays, differenceInDays } from "date-fns";
+import { Couple } from "./types/couple";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("love");
@@ -86,7 +87,7 @@ export default function Home() {
           fetch("/api/savings?byCategory=true"),
           fetch("/api/savings?currentMonth=true"),
         ]);
-        
+
         setCoupleData(await coupleRes.json());
         setPlans(await plansRes.json());
         setSavings(await savingsRes.json());
@@ -105,7 +106,7 @@ export default function Home() {
   }, []);
 
   // Couple functions
-  const updateStartDate = async (newDate: string) => {
+  const updateStartDate = async (coupleData: Couple) => {
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/couple", {
@@ -113,7 +114,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ startDate: newDate }),
+        body: JSON.stringify(coupleData),
       });
       setCoupleData(await response.json());
     } catch (error) {
@@ -123,12 +124,12 @@ export default function Home() {
     }
   };
 
-  const handleUpdatePlan = async (planData: Omit<Plan, "id" | "createdAt">) => {
+  const handleUpdatePlan = async (planData: Omit<Plan, "createdAt">) => {
     if (!editingPlan) return;
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/plans?id=${editingPlan.id}`, {
+      const response = await fetch(`/api/plans?id=${editingPlan._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -152,7 +153,7 @@ export default function Home() {
     }
   };
   // Plan functions
-  const handleAddPlan = async (planData: Omit<Plan, "id" | "createdAt">) => {
+  const handleAddPlan = async (planData: Omit<Plan, "createdAt">) => {
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/plans", {
@@ -214,7 +215,7 @@ export default function Home() {
     }
   };
 
-  const handleAddSaving = async (saving: Omit<Saving, "id" | "createdAt">) => {
+  const handleAddSaving = async (saving: Omit<Saving, "createdAt">) => {
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/savings", {
@@ -253,14 +254,12 @@ export default function Home() {
     }
   };
 
-  const handleUpdateSaving = async (
-    saving: Omit<Saving, "id" | "createdAt">
-  ) => {
+  const handleUpdateSaving = async (saving: Omit<Saving, "createdAt">) => {
     if (!editingSaving) return;
 
     setIsSubmitting(true);
     try {
-      const response = await fetch(`/api/savings?id=${editingSaving.id}`, {
+      const response = await fetch(`/api/savings?id=${editingSaving._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -322,12 +321,12 @@ export default function Home() {
   };
 
   const handleCategorySubmit = async (
-    category: Omit<SavingCategory, "id" | "createdAt">
+    category: Omit<SavingCategory, "createdAt">
   ) => {
     setIsSubmitting(true);
     try {
       if (editingCategory) {
-        await fetch(`/api/savings/categories?id=${editingCategory.id}`, {
+        await fetch(`/api/savings/categories?id=${editingCategory._id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -360,6 +359,7 @@ export default function Home() {
   };
   const handleEditCategory = (category: SavingCategory) => {
     setEditingCategory(category);
+    setIsCategoryModalOpen(true);
   };
 
   const handleDeleteCategory = async (id: string) => {
@@ -465,7 +465,7 @@ export default function Home() {
                       <input
                         type="date"
                         value={coupleData.startDate.split("T")[0]}
-                        onChange={(e) => updateStartDate(e.target.value)}
+                        onChange={(e) => setCoupleData({...coupleData, startDate: e.target.value})}
                         className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                         max={new Date().toISOString().split("T")[0]}
                         disabled={isSubmitting}
@@ -475,7 +475,7 @@ export default function Home() {
 
                   <div className="pt-2">
                     <button
-                      onClick={() => updateStartDate(coupleData.startDate)}
+                      onClick={() => updateStartDate(coupleData)}
                       disabled={isSubmitting}
                       className={`w-full py-2 px-4 rounded-lg text-white font-medium transition-colors ${
                         isSubmitting

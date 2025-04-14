@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // components/SavingsForm.tsx
 "use client";
 
@@ -6,10 +7,10 @@ import { Saving } from "@/app/types/saving";
 import { FiDollarSign, FiFileText, FiTag, FiCalendar } from "react-icons/fi";
 
 interface SavingsFormProps {
-  onSubmit: (saving: Omit<Saving, "id" | "createdAt">) => Promise<void>;
+  onSubmit: (saving: Omit<Saving, "createdAt">) => Promise<void>;
   isSubmitting?: boolean;
   initialData?: Saving;
-  categories: { id: string; name: string; imageUrl?: string }[];
+  categories: { _id?: any; name: string; imageUrl?: string }[];
 }
 
 export default function SavingsForm({
@@ -31,7 +32,7 @@ export default function SavingsForm({
     if (initialData) {
       setAmount(initialData.amount);
       setDescription(initialData.description);
-      setDate(initialData.date.split("T")[0]);
+      setDate(String(initialData.date).split("T")[0]);
       setCategoryId(initialData.categoryId);
     }
   }, [initialData]);
@@ -95,7 +96,7 @@ export default function SavingsForm({
           >
             <option value="">Chọn danh mục</option>
             {categories.map((category) => (
-              <option key={category.id} value={category.id}>
+              <option key={category._id} value={category._id}>
                 {category.name}
               </option>
             ))}
@@ -122,7 +123,7 @@ export default function SavingsForm({
         </label>
         <input
           type="date"
-          value={date}
+          value={date as string}
           onChange={(e) => setDate(e.target.value)}
           className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           required

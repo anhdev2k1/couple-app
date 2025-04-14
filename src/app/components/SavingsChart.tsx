@@ -30,6 +30,7 @@ export default function SavingsChart({
     (total, item) => total + item.amount,
     0
   );
+  
   const renderCustomizedLabel = ({
     cx,
     cy,

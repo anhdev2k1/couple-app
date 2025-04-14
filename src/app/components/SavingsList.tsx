@@ -30,7 +30,7 @@ export default function SavingsList({
           saving.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
           saving.amount.toString().includes(searchTerm);
 
-        const category = categories.find((cat) => cat.id === saving.categoryId);
+        const category = categories.find((cat) => cat._id === saving.categoryId);
         const matchesCategory = category?.name
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
@@ -40,7 +40,7 @@ export default function SavingsList({
     : [];
 
   const getCategoryById = (id: string) => {
-    return categories.find((category) => category.id === id);
+    return categories.find((category) => category._id === id);
   };
 
   const handleDelete = async (id: string) => {
@@ -109,7 +109,7 @@ export default function SavingsList({
                 const category = getCategoryById(saving.categoryId);
                 return (
                   <tr
-                    key={saving.id}
+                    key={saving._id}
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-4 py-3 whitespace-nowrap">
@@ -153,12 +153,12 @@ export default function SavingsList({
                           <FiEdit size={16} />
                         </button>
                         <button
-                          onClick={() => handleDelete(saving.id)}
+                          onClick={() => handleDelete(saving._id)}
                           className="p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors"
                           title="Xóa"
-                          disabled={deletingId === saving.id}
+                          disabled={deletingId === saving._id}
                         >
-                          {deletingId === saving.id ? (
+                          {deletingId === saving._id ? (
                             <span className="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
                           ) : (
                             <FiTrash2 size={16} />

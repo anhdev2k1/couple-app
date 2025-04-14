@@ -2,7 +2,18 @@
   "coupleData": {
     "startDate": "2022-04-13"
   },
-  "plans": [],
+  "plans": [
+    {
+      "id": "7523c538-a209-4f6c-8c2a-69f5fc096d1b",
+      "title": "fdfgdfg",
+      "description": "dfgdfg",
+      "date": "2025-04-07",
+      "location": "dgdfg",
+      "budget": 4444,
+      "completed": false,
+      "createdAt": "2025-04-13T18:18:55.663Z"
+    }
+  ],
   "savingCategories": [
     {
       "id": "1",
@@ -29,5 +40,14 @@
       "createdAt": "2025-04-13T15:06:01.842Z"
     }
   ],
-  "savings": []
+  "savings": [
+    {
+      "id": "6c040489-56b2-4184-8641-8a9748e8d1fd",
+      "amount": 15,
+      "description": "",
+      "date": "2025-04-13",
+      "categoryId": "1",
+      "createdAt": "2025-04-13T18:18:39.183Z"
+    }
+  ]
 }

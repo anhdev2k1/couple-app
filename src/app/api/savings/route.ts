@@ -31,6 +31,7 @@ export async function GET(request: Request) {
 
   if (byCategory === "true") {
     const categorySavings = await getSavingsByCategory();
+    
     return NextResponse.json(categorySavings);
   }
 

@@ -48,7 +48,7 @@ export default function CategorySection({
         <div className="space-y-3">
           {categories.map((category) => (
             <div
-              key={category.id}
+              key={category._id}
               className="flex items-center p-3 border rounded-lg hover:bg-gray-50 transition-colors"
             >
               {category.imageUrl && (
@@ -79,7 +79,7 @@ export default function CategorySection({
                   <FiEdit2 size={16} />
                 </button>
                 <button
-                  onClick={() => onDelete(category.id)}
+                  onClick={() => onDelete(category._id)}
                   className="p-1.5 text-red-500 hover:bg-red-50 rounded-full transition-colors"
                   title="Xóa"
                 >

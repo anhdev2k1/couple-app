@@ -97,12 +97,12 @@ export default function CategoryForm({
           value={icon}
           onChange={(e) => setIcon(e.target.value)}
           className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          placeholder="Tên icon (theo thư viện react-icons)"
+          placeholder="Tên icon (ví dụ: bank)"
         />
       </div>
 
       <div>
-        <div className="flex justify-between items-center mb-1">
+        {/* <div className="flex justify-between items-center mb-1">
           <label className="block text-sm font-medium">Ảnh đại diện</label>
           <button
             type="button"
@@ -111,7 +111,7 @@ export default function CategoryForm({
           >
             {showImageInput ? "Ẩn" : "Thêm ảnh"}
           </button>
-        </div>
+        </div> */}
 
         {imageUrl && (
           <div className="mb-2 flex items-center">
@@ -120,6 +120,7 @@ export default function CategoryForm({
               alt={name}
               className="w-12 h-12 object-cover rounded-lg mr-2"
               width={20}
+              height={20}
             />
             <button
               type="button"

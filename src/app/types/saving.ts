@@ -1,21 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // app/types/saving.ts
 export interface SavingCategory {
-  id: string;
+  _id?: any;
   name: string;
   color: string;
   icon: string;
   imageUrl?: string; // Thêm trường imageUrl
-  createdAt: string;
+  createdAt: string | Date;
   updatedAt?: string;
 }
 
 export interface Saving {
-  id: string;
+  _id?: any;
   amount: number;
   description: string;
-  date: string;
+  date: string| Date;
   categoryId: string;
-  createdAt: string;
+  createdAt: string | Date;
   updatedAt?: string;
 }
 

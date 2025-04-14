@@ -115,7 +115,7 @@ export default function PlanList({
 
             return (
               <div
-                key={plan.id}
+                key={plan._id}
                 className={`p-5 hover:bg-gray-50 transition-colors ${
                   plan.completed ? "bg-green-50" : isPast ? "bg-yellow-50" : ""
                 }`}
@@ -123,7 +123,7 @@ export default function PlanList({
                 <div className="flex items-start">
                   {/* Checkbox */}
                   <button
-                    onClick={() => onToggleComplete(plan.id, !plan.completed)}
+                    onClick={() => onToggleComplete(plan._id, !plan.completed)}
                     className={`mt-1 mr-3 flex-shrink-0 w-6 h-6 rounded flex items-center justify-center ${
                       plan.completed
                         ? "bg-green-500 text-white"
@@ -154,12 +154,12 @@ export default function PlanList({
                           <FiEdit2 />
                         </button>
                         <button
-                          onClick={() => handleDelete(plan.id)}
+                          onClick={() => handleDelete(plan._id)}
                           className="text-red-500 hover:text-red-700 p-1"
                           title="Xóa"
-                          disabled={deletingId === plan.id}
+                          disabled={deletingId === plan._id}
                         >
-                          {deletingId === plan.id ? (
+                          {deletingId === plan._id ? (
                             <span className="animate-spin inline-block w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full"></span>
                           ) : (
                             <FiTrash2 />
