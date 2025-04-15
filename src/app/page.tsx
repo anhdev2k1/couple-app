@@ -27,6 +27,7 @@ import { Saving, SavingCategory } from "./types/saving";
 import { Plan } from "./types/plan";
 import { addDays, differenceInDays } from "date-fns";
 import { Couple } from "./types/couple";
+import Loading from "./components/Loading";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("love");
@@ -64,9 +65,11 @@ export default function Home() {
     setEditingCategory(null);
   };
 
+  const [loading, setLoading] = useState(false);
   // Fetch all data
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const [
           coupleRes,
@@ -99,12 +102,14 @@ export default function Home() {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
+  if (loading) return <Loading />;
   // Couple functions
   const updateStartDate = async (coupleData: Couple) => {
     setIsSubmitting(true);
@@ -465,7 +470,12 @@ export default function Home() {
                       <input
                         type="date"
                         value={coupleData.startDate.split("T")[0]}
-                        onChange={(e) => setCoupleData({...coupleData, startDate: e.target.value})}
+                        onChange={(e) =>
+                          setCoupleData({
+                            ...coupleData,
+                            startDate: e.target.value,
+                          })
+                        }
                         className="flex-1 px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
                         max={new Date().toISOString().split("T")[0]}
                         disabled={isSubmitting}
